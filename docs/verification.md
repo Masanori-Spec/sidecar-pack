@@ -25,11 +25,21 @@ This is not a throughput guarantee, a browser-memory measurement, an original di
 
 ## Browser and remote CI status
 
-Local Chromium was deliberately not launched in this restricted environment. No sandbox-disabling fallback is allowed. Browser tests and responsive screenshots must be executed through the sandbox-enabled CI job before claiming browser verification. At document creation, remote CI and screenshot evidence are pending; a workflow file is not evidence of a successful run.
+Local Chromium was deliberately not launched in the restricted local environment. No sandbox-disabling fallback was used.
 
-The browser suite covers review/grouping, ZIP/receipt downloads, exact caps, unsafe names, cancellation, stale results, read failures, URL cleanup, reset/reselection, folder-root parity, keyboard dialogs, back navigation and desktop/mobile screenshots. These are prepared cases, not executed browser evidence.
+The [first published CI run](https://github.com/Masanori-Spec/sidecar-pack/actions/runs/37138926725) completed successfully on 2026-10-03 for commit `987c960156f76b779a590f7588b5ae3e98d82c45`:
 
-CI runs core tests, syntax checks, formatting and a static build on Node 22 and 24, plus a separate browser job. Browser tests are configured by the UI implementation. Record the exact tested commit and CI URL when publishing a verification claim.
+- Node 22 and Node 24: all 28 unit/integration tests, syntax checks, formatting, static build, and synthetic benchmark passed
+- Chromium 141 / Playwright 1.56.0: all 14 browser cases passed in 10.9 seconds, with `chromiumSandbox: true`
+- Browser cases cover review/grouping, ZIP/receipt downloads, exact caps, unsafe names, cancellation, stale results, read failures, URL cleanup, reset/reselection, folder-root parity, keyboard dialogs, back navigation and desktop/mobile layouts
+- Downloaded `browser-evidence` artifact SHA-256: `4a7b3db26abb9501a6b1f96e29012de1f13e087342174f8e205e2fed1a292936`
+- All four retained screenshots were visually inspected: Japanese desktop initial/completed states and Japanese/English mobile initial/completed states. Labels, controls, generated ZIP/receipt links and narrow-screen flow were readable without overlap or horizontal clipping in these captures
+
+Screenshots in [screenshots/](screenshots/) were copied byte-for-byte from that artifact. They use the synthetic demo, not real photographs or user data. The subsequent documentation/screenshot commit does not change application code, tests, or workflow. Each publication commit still triggers the full workflow; inspect the latest run for that commit rather than assuming an earlier run applies.
+
+Automated Chromium checks and selected screenshots are not evidence for every browser, device, assistive technology, memory limit, or real-world photo workflow. This is bounded implementation evidence, not a claim of universal compatibility.
+
+GitHub reported maintenance warnings that the v4 action releases target deprecated Node 20 and are being run on Node 24. The jobs succeeded; upgrade the actions and revalidate in a maintenance update.
 
 The pinned `ubuntu-22.04` runner is in deprecation and retires on 2027-04-17 according to the [official runner-images notice](https://github.com/actions/runner-images/issues/14254). Migrate and revalidate a supported sandbox-capable runner before that date. Playwright's [`chromiumSandbox` launch option](https://playwright.dev/docs/api/class-browsertype#browser-type-launch-option-chromium-sandbox) must remain enabled.
 

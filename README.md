@@ -8,6 +8,16 @@ Keep reviewed original + XMP families together in independently extractable ZIP 
 
 Independent ZIP parts and First-Fit Decreasing packing already exist. This project combines a narrower workflow: explicitly reviewed sidecar families, a hard cap on **actual ZIP bytes**, refusal when an indivisible family cannot fit, and a separate reproducible receipt. There is no claim of algorithmic novelty, optimal packing, established user demand, or superiority to general archive tools. See [comparison and evidence](docs/comparison.md).
 
+## Preview
+
+Synthetic demo only; the example filenames contain text, not real photographs or personal data.
+
+![Japanese desktop interface](docs/screenshots/desktop-ja.png)
+
+[Completed desktop ZIP plan](docs/screenshots/desktop-complete.png) · [Japanese mobile layout](docs/screenshots/mobile-ja.png) · [English mobile completion](docs/screenshots/mobile-en-complete.png)
+
+The [first published CI run](https://github.com/Masanori-Spec/sidecar-pack/actions/runs/37138926725) passed 28 unit/integration tests on each of Node 22 and 24, plus 14 sandbox-enabled Chromium browser tests. See [verification details](docs/verification.md) for the tested commit and limitations.
+
 ## Run locally
 
 Node.js 22 or newer is required for the CLI. There are no runtime dependencies.
@@ -88,4 +98,4 @@ npm run test:browser
 
 `npm run build` copies browser files and the shared core to `dist/`, preserving relative module paths. The entry point is `dist/web/index.html`; serve the **dist root**, not only its web subdirectory.
 
-[Verification notes](docs/verification.md) distinguish executed checks from pending browser/remote CI checks. [Security and limitations](docs/security.md) describe data handling and the threat boundary. [Local benchmark](docs/benchmark-local.json) is a single synthetic measurement, not a browser-memory or throughput guarantee.
+[Verification notes](docs/verification.md) record executed local and remote checks, screenshot provenance, and remaining limits. [Security and limitations](docs/security.md) describe data handling and the threat boundary. [Local benchmark](docs/benchmark-local.json) is a single synthetic measurement, not a browser-memory or throughput guarantee.
