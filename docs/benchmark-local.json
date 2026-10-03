@@ -1,0 +1,34 @@
+{
+  "benchmark": "Sidecar Pack bounded synthetic maximum selected input",
+  "node": "v24.19.0",
+  "platform": "linux",
+  "architecture": "x64",
+  "cpu": "AMD EPYC 9V74 80-Core Processor",
+  "files": 1000,
+  "sourceBytes": 134217728,
+  "capBytes": 67108864,
+  "parts": [
+    {
+      "name": "part-001.zip",
+      "size": 67034684
+    },
+    {
+      "name": "part-002.zip",
+      "size": 67034414
+    },
+    {
+      "name": "part-003.zip",
+      "size": 268696
+    }
+  ],
+  "milliseconds": 1496.02,
+  "rssBeforeBytes": 40759296,
+  "rssAfterBytes": 322293760,
+  "processPeakRssBytes": 389079040,
+  "caveats": [
+    "Single synthetic run, not a speed guarantee.",
+    "All completed ZIPs are retained in memory; this is not a streaming implementation.",
+    "Process peak RSS includes Node, source snapshots, archive storage and hash buffers.",
+    "Original disk IO, browser memory and user downloads are not measured."
+  ]
+}

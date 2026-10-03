@@ -1,0 +1,27 @@
+{
+  "name": "sidecar-pack",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Reviewed sidecar groups in deterministic, independently extractable hard-cap ZIP parts",
+  "engines": {
+    "node": ">=22"
+  },
+  "bin": {
+    "sidecar-pack": "src/cli.js"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "check:syntax": "node scripts/check-syntax.mjs",
+    "build": "node scripts/build.mjs",
+    "serve": "node scripts/serve.mjs",
+    "benchmark": "node scripts/benchmark.mjs",
+    "test:browser": "playwright test",
+    "verify": "npm test && npm run check:syntax && npm run format:check && npm run build",
+    "format:check": "prettier --check src web scripts test docs README.md package.json package-lock.json .github playwright.config.js"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.56.0",
+    "prettier": "3.6.2"
+  }
+}

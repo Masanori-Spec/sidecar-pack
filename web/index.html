@@ -1,0 +1,529 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#173f3b" />
+    <meta
+      name="description"
+      content="Sidecar Pack — review file relationships, plan exact-size ZIP parts, and keep a local integrity receipt. Files stay in your browser."
+    />
+    <title>Sidecar Pack · ファイルの関係ごと、ぴったり小分け。</title>
+    <link rel="icon" href="./icon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./styles.css" />
+    <script type="module" src="./app.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#workspace" data-i18n="skip">作業エリアへ</a>
+    <header class="masthead wrap">
+      <a class="brand" href="./index.html" aria-label="Sidecar Pack home">
+        <svg
+          class="brand-mark"
+          width="34"
+          height="34"
+          viewBox="0 0 34 34"
+          aria-hidden="true"
+        >
+          <rect x="2" y="2" width="19" height="28" rx="3" fill="currentColor" />
+          <rect
+            x="24"
+            y="11"
+            width="8"
+            height="19"
+            rx="2"
+            fill="currentColor"
+          />
+          <path d="M7 10h9M7 15h9M7 20h5" stroke="#f6f3eb" stroke-width="1.5" />
+        </svg>
+        <span>Sidecar<span class="brand-pack">Pack</span></span>
+      </a>
+      <div class="header-right">
+        <span class="local-badge"
+          ><span class="status-dot"></span
+          ><span data-i18n="local">ブラウザ内で完結</span></span
+        ><button
+          type="button"
+          id="language-toggle"
+          class="language-toggle"
+          aria-label="Switch to English"
+        >
+          EN <span aria-hidden="true">↗</span>
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero wrap" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow">SMALL PACKAGES. INTACT RELATIONSHIPS.</p>
+          <h1 id="hero-title">
+            <span data-i18n="heroA">ファイルの関係ごと、</span><br /><span
+              class="serif-accent"
+              data-i18n="heroB"
+              >ぴったり小分け。</span
+            >
+          </h1>
+          <p class="hero-description" data-i18n="heroDescription">
+            写真と編集情報を、同じ箱に。ファイルの組み合わせを確認してから、指定サイズ内のZIPにまとめます。
+          </p>
+          <div class="hero-facts">
+            <span data-i18n="factLocal">アップロードなし</span
+            ><span data-i18n="factStore">無圧縮ZIP</span
+            ><span data-i18n="factReceipt">SHA-256付き記録</span>
+          </div>
+        </div>
+        <div class="packing-illustration" aria-hidden="true">
+          <div class="illustration-label">KEEP TOGETHER / 01</div>
+          <div class="art-sheet art-image">
+            <span class="art-filetype">ORIGINAL</span
+            ><svg viewBox="0 0 140 85">
+              <path d="M0 85V63L40 24L75 58L98 36L140 78V85Z" fill="#a9bfb1" />
+              <path d="M0 85L64 45L106 85Z" fill="#35665c" />
+              <circle cx="110" cy="19" r="9" fill="#d8b995" /></svg
+            ><span>scene-001.jpg</span>
+          </div>
+          <div class="art-sheet art-sidecar">
+            <span class="art-filetype">SIDECAR</span
+            ><span class="art-code"
+              >&lt;xmp&gt;<br />&nbsp; edits<br />&lt;/xmp&gt;</span
+            ><span>.jpg.xmp</span>
+          </div>
+          <div class="art-binder">
+            <span>ZIP 01</span><span>↓</span><span>WITHIN YOUR LIMIT</span>
+          </div>
+          <div class="illustration-foot">A little order, before you send.</div>
+        </div>
+      </section>
+
+      <div class="workspace-shell" id="workspace" tabindex="-1">
+        <div class="wrap workspace-grid">
+          <div class="main-column">
+            <section
+              class="panel selection-panel"
+              aria-labelledby="select-title"
+            >
+              <div class="section-heading">
+                <span class="step-number">01</span>
+                <div>
+                  <p class="section-kicker">SELECT</p>
+                  <h2 id="select-title" data-i18n="selectTitle">
+                    まとめたいファイルを選ぶ
+                  </h2>
+                </div>
+              </div>
+              <div class="selection-surface">
+                <svg
+                  width="42"
+                  height="37"
+                  viewBox="0 0 42 37"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M3 9V5a2 2 0 0 1 2-2h12l4 5h16a2 2 0 0 1 2 2v23H3V9Z"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                  />
+                  <path
+                    d="M3 13h36M21 19v9m-4-4 4 4 4-4"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                  />
+                </svg>
+                <p class="selection-title" data-i18n="selectPrompt">
+                  ひとつの選択から、はじめよう。
+                </p>
+                <p class="muted small" data-i18n="selectHelp">
+                  フォルダ内の相対パスを保持。再選択すると入れ替わります。
+                </p>
+                <div class="selection-buttons">
+                  <button
+                    type="button"
+                    id="select-folder"
+                    class="button primary"
+                  >
+                    <span aria-hidden="true">＋</span>
+                    <span data-i18n="folderButton">フォルダを選ぶ</span></button
+                  ><button
+                    type="button"
+                    id="select-files"
+                    class="button secondary"
+                    data-i18n="filesButton"
+                  >
+                    ファイルを選ぶ
+                  </button>
+                </div>
+                <input
+                  type="file"
+                  id="folder-input"
+                  webkitdirectory
+                  multiple
+                  hidden
+                  aria-label="フォルダを選ぶ / Select folder"
+                />
+                <input
+                  type="file"
+                  id="file-input"
+                  multiple
+                  hidden
+                  aria-label="ファイルを選ぶ / Select files"
+                />
+                <button
+                  type="button"
+                  id="load-demo"
+                  class="text-button demo-button"
+                >
+                  <span aria-hidden="true">↗</span>
+                  <span data-i18n="demoButton">まずは合成デモで試す</span>
+                </button>
+              </div>
+              <div class="selection-footer">
+                <span data-i18n="limits"
+                  >上限：1,000ファイル · 合計128 MiB · 1 ZIPあたり64 MiB · 100
+                  ZIP</span
+                ><button
+                  type="button"
+                  id="reset-button"
+                  class="text-button"
+                  disabled
+                  data-i18n="reset"
+                >
+                  リセット
+                </button>
+              </div>
+              <p
+                id="demo-notice"
+                class="inline-note"
+                hidden
+                data-i18n="demoNotice"
+              >
+                合成デモです。画像名のファイルも中身は説明用テキストです。実際の写真や個人情報は含みません。
+              </p>
+            </section>
+
+            <section class="panel review-panel" aria-labelledby="review-title">
+              <div class="section-heading">
+                <span class="step-number">02</span>
+                <div>
+                  <p class="section-kicker">REVIEW</p>
+                  <h2 id="review-title" data-i18n="reviewTitle">
+                    一緒に入れる組を確認する
+                  </h2>
+                </div>
+                <span id="file-count" class="count-pill">0 FILES</span>
+              </div>
+              <p class="section-description" data-i18n="reviewDescription">
+                「original.ext」と「original.ext.xmp」だけを組み合わせ候補にします。名前が似ているだけのXMPは、自動で結びつけません。
+              </p>
+              <div
+                id="selection-summary"
+                class="selection-summary"
+                hidden
+              ></div>
+              <div id="review-empty" class="empty-state">
+                <span class="empty-glyph" aria-hidden="true">↳</span>
+                <p data-i18n="emptyReview">
+                  選択したファイルが、ここに並びます
+                </p>
+                <span class="small muted" data-i18n="emptyReviewHelp"
+                  >組み合わせは、ZIPを作る前にいつでも変更できます。</span
+                >
+              </div>
+              <div id="review-content" hidden>
+                <div class="review-toolbar">
+                  <span id="review-state" class="small"></span
+                  ><label class="search-field"
+                    ><span class="visually-hidden" data-i18n="filterLabel"
+                      >ファイル名で絞り込む</span
+                    ><svg
+                      viewBox="0 0 18 18"
+                      width="16"
+                      height="16"
+                      aria-hidden="true"
+                    >
+                      <circle
+                        cx="7"
+                        cy="7"
+                        r="4.8"
+                        fill="none"
+                        stroke="currentColor"
+                      />
+                      <path d="m11 11 4 4" stroke="currentColor" /></svg
+                    ><input
+                      type="search"
+                      id="file-filter"
+                      placeholder="ファイル名で絞り込み"
+                      autocomplete="off"
+                      aria-label="ファイル名で絞り込む / Filter files"
+                  /></label>
+                </div>
+                <div class="file-list-header" aria-hidden="true">
+                  <span data-i18n="fileLabel">ファイル / 組み合わせ</span
+                  ><span data-i18n="sizeLabel">元データ</span>
+                </div>
+                <ul
+                  id="file-list"
+                  class="file-list"
+                  aria-label="選択したファイル / Selected files"
+                ></ul>
+                <p
+                  id="filter-empty"
+                  class="small muted"
+                  hidden
+                  data-i18n="filterEmpty"
+                >
+                  一致するファイルはありません。
+                </p>
+                <div class="review-confirmation">
+                  <label
+                    ><input type="checkbox" id="review-confirm" /><span
+                      data-i18n="reviewConfirm"
+                      >すべての組み合わせと除外ファイルを確認しました</span
+                    ></label
+                  >
+                  <p class="small muted" data-i18n="reviewConfirmHelp">
+                    単独・別の組への割り当て・除外を明示してください。未解決のXMPがある間は計画できません。
+                  </p>
+                </div>
+              </div>
+            </section>
+
+            <section class="panel plan-panel" aria-labelledby="plan-title">
+              <div class="section-heading">
+                <span class="step-number">03</span>
+                <div>
+                  <p class="section-kicker">PACK</p>
+                  <h2 id="plan-title" data-i18n="planTitle">
+                    計画を見てから、ZIPを作る
+                  </h2>
+                </div>
+              </div>
+              <div id="plan-empty" class="empty-state compact">
+                <p data-i18n="emptyPlan">右のサイズ上限を決めて、計画を作成</p>
+                <span class="small muted" data-i18n="emptyPlanHelp"
+                  >同じ組を分割せず、ZIPのヘッダーも含めて計算します。</span
+                >
+              </div>
+              <div id="plan-content" hidden>
+                <div id="plan-summary" class="plan-summary"></div>
+                <ol
+                  id="part-list"
+                  class="part-list"
+                  aria-label="ZIP計画 / ZIP plan"
+                ></ol>
+                <p class="small muted" data-i18n="planNoCompression">
+                  サイズは無圧縮ZIPの正確なバイト数です。圧縮率への期待には依存しません。
+                </p>
+                <div class="generation-actions">
+                  <button
+                    type="button"
+                    id="generate-button"
+                    class="button primary"
+                    data-i18n="generateButton"
+                  >
+                    この計画でZIPを作る</button
+                  ><button
+                    type="button"
+                    id="cancel-button"
+                    class="button secondary"
+                    hidden
+                    data-i18n="cancelButton"
+                  >
+                    生成を中止
+                  </button>
+                </div>
+              </div>
+              <div id="generation-progress" class="generation-progress" hidden>
+                <progress
+                  id="build-progress"
+                  aria-label="ZIP生成 / ZIP generation"
+                ></progress>
+                <p id="progress-label" class="small"></p>
+              </div>
+              <div id="download-content" class="download-content" hidden>
+                <div class="result-heading">
+                  <span class="complete-mark" aria-hidden="true">✓</span>
+                  <div>
+                    <h3 data-i18n="downloadTitle">持ち出す準備ができました</h3>
+                    <p class="small muted" data-i18n="downloadHelp">
+                      ZIPをそれぞれ保存し、受け渡し記録も一緒に保管してください。
+                    </p>
+                  </div>
+                </div>
+                <ul id="download-list" class="download-list"></ul>
+                <a
+                  id="receipt-download"
+                  class="receipt-link"
+                  download="sidecar-pack-receipt.json"
+                  ><span data-i18n="receiptButton">受け渡し記録を保存</span
+                  ><span class="small">sidecar-pack-receipt.json ↓</span></a
+                >
+                <p class="small muted" data-i18n="downloadLifetime">
+                  ファイル・組み合わせ・上限を変更すると、計画とダウンロードを破棄します。
+                </p>
+              </div>
+            </section>
+          </div>
+
+          <aside
+            class="side-column"
+            aria-label="設定と注意 / Settings and notes"
+          >
+            <section class="cap-card" aria-labelledby="cap-title">
+              <p class="section-kicker">THE SIZE OF YOUR BOX</p>
+              <h2 id="cap-title" data-i18n="capTitle">1つのZIPの上限</h2>
+              <div class="cap-fields">
+                <label
+                  ><span class="visually-hidden" data-i18n="capValueLabel"
+                    >上限の数値</span
+                  ><input
+                    id="cap-value"
+                    type="text"
+                    inputmode="decimal"
+                    value="20"
+                    autocomplete="off"
+                    spellcheck="false"
+                    aria-describedby="cap-exact cap-explanation" /></label
+                ><label
+                  ><span class="visually-hidden" data-i18n="capUnitLabel"
+                    >サイズ単位</span
+                  ><select id="cap-unit">
+                    <option value="MiB">MiB</option>
+                    <option value="MB">MB</option>
+                    <option value="B">bytes</option>
+                  </select></label
+                >
+              </div>
+              <p id="cap-exact" class="cap-exact">20,971,520 bytes</p>
+              <p id="cap-explanation" class="small" data-i18n="capExplanation">
+                MB = 1,000,000 bytes<br />MiB = 1,048,576 bytes
+              </p>
+              <div class="cap-rule"></div>
+              <p class="small cap-caution" data-i18n="capCaution">
+                この上限はZIPファイル自体に適用。メールのBase64変換や、送信先サービスの容量制限は含みません。
+              </p>
+              <button
+                type="button"
+                id="plan-button"
+                class="button light"
+                disabled
+              >
+                <span data-i18n="planButton">ZIPの計画を作成</span
+                ><span aria-hidden="true">↗</span>
+              </button>
+              <p id="plan-gate" class="small cap-gate" data-i18n="gateSelect">
+                ファイルを選択すると始められます
+              </p>
+            </section>
+            <section class="trust-note" aria-labelledby="trust-title">
+              <div class="note-top">
+                <span aria-hidden="true">◎</span>
+                <h3 id="trust-title" data-i18n="trustTitle">
+                  手元で整理。送信はしません。
+                </h3>
+              </div>
+              <p data-i18n="trustBody">
+                ファイルはこのブラウザ内で処理されます。アカウントもアップロードも不要です。
+              </p>
+              <ul>
+                <li data-i18n="warningEncryption">
+                  ZIPは暗号化されません。元の内容がそのまま入ります。
+                </li>
+                <li data-i18n="warningReceipt">
+                  記録にはファイル名・サイズ・ハッシュが含まれます。共有範囲に注意してください。
+                </li>
+                <li data-i18n="warningHash">
+                  SHA-256は同一性の確認用。作成者の真正性を証明しません。
+                </li>
+                <li data-i18n="warningBackup">
+                  対象は選択したファイルだけ。完全なバックアップを保証しません。
+                </li>
+                <li data-i18n="warningMetadata">
+                  内容内のメタデータは保持します。元の更新日時・ファイル権限は保持しません。
+                </li>
+                <li data-i18n="warningMemory">
+                  メモリ上で生成します。低メモリ端末では小さな選択からお試しください。
+                </li>
+              </ul>
+            </section>
+            <div class="margin-note">
+              <span class="hand-drawn" aria-hidden="true">↳</span>
+              <p data-i18n="marginNote">
+                名前からの推測は、<br />最後に人が確かめる。
+              </p>
+            </div>
+          </aside>
+        </div>
+        <div class="wrap">
+          <p id="error-message" class="error-message" role="alert" hidden></p>
+          <p
+            id="live-status"
+            class="live-status"
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+          ></p>
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer wrap">
+      <span>Sidecar Pack <span class="footer-slash">/</span> v0.1.0</span
+      ><span data-i18n="footer">関係を守って、小さく届ける。</span
+      ><span>LOCAL-FIRST · STORE ZIP</span>
+    </footer>
+
+    <dialog
+      id="assignment-dialog"
+      aria-labelledby="dialog-title"
+      aria-describedby="dialog-help"
+    >
+      <form method="dialog" class="dialog-close-form">
+        <button class="icon-button" aria-label="閉じる / Close">×</button>
+      </form>
+      <p class="section-kicker">REVIEW ONE FILE</p>
+      <h2 id="dialog-title" data-i18n="dialogTitle">
+        このファイルをどこに入れる？
+      </h2>
+      <p id="dialog-file" class="dialog-file"></p>
+      <p id="dialog-help" class="small muted" data-i18n="dialogHelp">
+        同じ組に指定したファイルは、必ず同じZIPに入ります。ファイル内容から関係を判定することはありません。
+      </p>
+      <label
+        class="dialog-label"
+        for="group-anchor"
+        data-i18n="groupAnchorLabel"
+        >既存の組に追加</label
+      ><select id="group-anchor"></select
+      ><button
+        type="button"
+        id="group-save"
+        class="button primary full-width"
+        data-i18n="groupSave"
+      >
+        この組に割り当てる
+      </button>
+      <div class="dialog-divider"><span data-i18n="or">または</span></div>
+      <div class="dialog-alternatives">
+        <button
+          type="button"
+          id="group-singleton"
+          class="button secondary"
+          data-i18n="groupSingleton"
+        >
+          単独の組にする</button
+        ><button
+          type="button"
+          id="group-exclude"
+          class="button secondary"
+          data-i18n="groupExclude"
+        >
+          今回のZIPから除外
+        </button>
+      </div>
+      <p class="small muted" data-i18n="dialogCaution">
+        組の基準になっているファイルを移動・除外すると、その組の他のファイルは未確認に戻ります。
+      </p>
+    </dialog>
+  </body>
+</html>
